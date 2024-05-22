@@ -1,0 +1,69 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg bg-dark border-bottom border-body" style="background-color: #e3f2fd;">
+    <div class="container-fluid">
+        {% if request.user.is_superuser %}
+        <a class="navbar-brand fw-bolder ms-3 text-light" href="{% url 'owner-home' %}">Pet Store Admin</a>
+        {% else %}
+        <a class="navbar-brand fw-bolder ms-3 text-light" href="{% url 'user-home' %}">Pet Store</a>
+        {% endif %}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end me-4 p-3" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                {% if request.user.is_superuser %}
+                <a class="nav-link text-light me-3 fw-bold" aria-current="page" href="{% url 'owner-home' %}">Home</a>
+                <a class="nav-link text-light me-3 fw-bold" aria-current="page" href="{% url 'users-list' %}">Users</a>
+                <a class="nav-link text-light me-3 fw-bold" aria-current="page" href="">Orders</a>
+                <a class="nav-link text-light me-3 fw-bold" aria-current="page" href="">Complaints</a>
+                <a class="nav-link text-light me-3 fw-bold" aria-current="page" href="">Add Products</a>
+                {% else %}
+                <a class="nav-link text-light me-3 fw-bold" aria-current="page" href="{% url 'user-home' %}">Home</a>
+                <a class="nav-link text-light me-3 fw-bold" aria-current="page" href="">New
+                    Request</a>
+
+                {% endif %}
+                <div class="dropdown">
+                    <a href="" class="dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                        style="position: relative;">
+                        {% if request.user.profile %}
+                        <img src="" alt="" height="40px" width="40px"
+                            class="rounded-pill profile">
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item"
+                                    href="{% url 'profile-view' request.user.profile.id %}">Profile</a>
+
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider text-light" style="color:white;">
+                            </li>
+                            <li><a class="dropdown-item drop-nav-item text-danger" href="{% url 'sign-out' %}">Log
+                                    Out</a>
+                            </li>
+                        </ul>
+                        {% else %}
+                        {% if request.user.is_superuser %}
+                        <a class="nav-link btn btn-outline-danger text-light me-3 fw-bold" aria-current="page"
+                            href="{% url 'sign-out' %}">Log
+                            Out</a>
+                        {%else%}
+                        <a class="nav-link text-light me-3 fw-bold" aria-current="page"
+                            href="{% url 'profile-create' %}">Add
+                            Profile</a>
+                        <a class="nav-link btn btn-outline-danger text-light me-3 fw-bold" aria-current="page"
+                            href="{% url 'sign-out' %}">Log
+                            Out</a>
+                        {%endif%}
+                        {% endif %}
+                        <style>
+                            .dropdown-toggle::after {
+                                display: none;
+                            }
+                        </style>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

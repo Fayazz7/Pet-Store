@@ -1,0 +1,49 @@
+#header {
+	width:1000px;
+	height:72px;
+	position:relative;
+	margin:0 auto;
+}
+#header a#logo {
+	position:relative;
+	z-index:100;
+}
+#header a#logo img {
+	border:0;
+}
+/**-------------- Navigation style ---------------**/
+  #header ul.navigation {
+	list-style-type:none;
+	margin:-82px 0 0 300px;
+	padding:0;
+	overflow:hidden;
+}
+#header ul.navigation li {
+	float:left;
+	height:35px;
+	width:107px;
+}
+#header ul.navigation li.active {
+	background:url("../images/menu.gif");
+	background-repeat:no-repeat;
+	background-position: 0 -160px;
+}
+#header ul.navigation li a {
+	text-decoration:none;
+	color:#2c1d00;
+	font-family:"Myriad Pro";
+	font-size:14px;
+	font-weight:bold;
+	display:inline-block;
+	line-height:35px;
+	background:url("../images/menu-separator.gif");
+	background-repeat:no-repeat;
+	background-position:right;
+	height:35px;
+	padding:0 20px 0 20px;
+	text-align:center;
+	width:67px;
+}
+#header ul.navigation li a:hover {
+	color:#ffffff;
+}

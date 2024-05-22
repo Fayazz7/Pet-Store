@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    {% include "header.html" %}
+</head>
+
+<body>
+    {% include "nav-bar.html" %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4 fw-bolder ">All Users</h2>
+        <div class="table-responsive">
+            <table class="table  table-bordered">
+                <thead class="bg-black">
+                    <tr class="table-dark">
+                        <th class="align-middle">User</th>
+                        <th class="align-middle">Email</th>
+                        <th class="align-middle">Phone Number</th>
+                        <th class="align-middle">View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in data %}
+                    <tr>
+                        {% if d.is_superuser == False %}
+                        <td class="align-middle"> {{d.username}} </td>
+                        <td class="align-middle"> {{d.email}} </td>
+                        <td class="align-middle  "> {{d.profile.phone}} </td>
+                        <td class="align-middle d-flex justify-content-center "><a
+                                href="" class="btn btn-info ">View</a></td>
+                        {%endif%}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

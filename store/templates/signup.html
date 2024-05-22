@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% include "header.html" %}
+    <style>
+        .alert {
+            position: absolute;
+            top: 15px;
+            left: 80%;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    {%if messages%}
+    {%for m in messages%}
+      {%if m.level == DEFAULT_MESSAGE_LEVELS.ERROR%}
+        <div class="alert alert-danger align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="10" role="img" aria-label="Success:">
+                <use xlink:href="#check-circle-fill" />
+            </svg>
+            <div>
+                {{m}}
+            </div>
+        </div>
+    {%endif%}
+      {%if m.level == DEFAULT_MESSAGE_LEVELS.SUCCESS%}
+      <div class="alert alert-success  align-items-center" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="10" role="img" aria-label="Success:">
+            <use xlink:href="#check-circle-fill" />
+        </svg>
+        <div>
+            {{m}}
+        </div>
+    </div>
+        {%endif%}
+    {%endfor%}
+    {%endif%}
+        
+    <div class="container">
+        <section class="bg-image">
+            <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+                <div class="container">
+                    <div class="row d-flex justify-content-center align-items-center h-100">
+                        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                            <div class="card" style="border-radius: 15px;">
+                                <div class="card-body p-5">
+                                    <h2 class="text-uppercase text-center fw-bold mb-5">Create an account</h2>
+                                    
+                                    <form method="post">
+                                        {{form.errors}}
+                                        {% csrf_token %}
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label">Username:</label>
+                                            <input type="text" class="form-control" placeholder="Enter your username" name="username" />
+                                        </div>
+
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label">Your Email</label>
+                                            <input type="email" class="form-control" placeholder="Enter your email" name="email" />
+                                        </div>
+
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label">Your Phone Number</label>
+                                            <input type="text" class="form-control" placeholder="Enter your phone number" name="phone_number" pattern="^[\d\s\-\(\)]+$" title="Please enter a valid phone number"/>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form3Example4cg">Password</label>
+                                            <input type="password" id="form3Example4cg" class="form-control" placeholder="Enter your password" name="password1" />
+                                        </div>
+
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form3Example4cdg">Confirm your Password</label>
+                                            <input type="password" id="form3Example4cdg" class="form-control" placeholder="Enter your password again" name="password2" />
+                                        </div>
+
+                                        <div class="d-flex justify-content-center">
+                                            <button type="submit" class="btn btn-outline-success btn-block btn-lg">Register</button>
+                                        </div>
+
+                                        <p class="text-center text-muted mt-2 mb-0 me-2">Have already an account? <a href="{% url 'sign-in' %}" class="fw-bold text-body"><u>Login here</u></a></p>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

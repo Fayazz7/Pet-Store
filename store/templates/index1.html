@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petshop</title>
+    <link rel="stylesheet" href="{% static 'css/nav.css' %}">
+</head>
+<body>
+    <div id="header"> <a href="#" id="logo"><img src="{% static 'images/logo.gif' %}" width="310" height="114" alt=""></a>
+        <ul class="navigation">
+          <li class="active"><a href="index.html">Home</a></li>
+          <li><a href="petmart.html">PetMart</a></li>
+          <li><a href="about.html">About us</a></li>
+          <li><a href="login/">Login</a></li>
+         <li><a href="blog.html">Blog</a></li>
+          <li><a href="petguide.html">PetGuide</a></li>
+          <li><a href="contact.html">Contact us</a></li>
+        </ul>
+      </div>
+    <h1>Hello {{request.session.id}}</h1>
+</body>
+</html>
