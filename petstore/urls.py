@@ -30,5 +30,6 @@ urlpatterns = [
     path('users/list/',ProductListView.as_view(),name='users-list'),
     path('product/add/',CreateProductView.as_view(),name='add-product'),
     path('category/',CategoryListCreateView.as_view(),name='category'),
-    path('product/view/<int:pk>/',ProductView.as_view(),name='view-product')
+    path('product/view/<int:pk>/',DetailProductView.as_view(),name='view-product'),
+    path('product/delete/<int:pk>/',DeleteProductView.as_view(),name='delete-product')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

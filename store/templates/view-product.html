@@ -27,7 +27,10 @@
                 <p class="card-text">Description : {{data.description}}</p>
 
                 <a href=" " class="btn btn-primary mt-3">Edit</a>
-                <a href=" " class="btn btn-danger mt-3 ml-2">Delete</a>
+                <form action="{% url 'delete-product' data.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger mt-3 ml-2">Delete</button>
+                </form>
                 <a href="" class="btn btn-primary mt-3 ml-2">Go Back</a>
               </div>
             </div>

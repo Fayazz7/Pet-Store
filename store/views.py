@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.views.generic import *
 from .forms import *
 from . models import *
@@ -90,16 +90,24 @@ class CreateProductView(View):
     def post(self, request, *args, **kwargs):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            print("Form is valid")  
             form.save()
-            return render(request, 'add-product.html', {"form": form})
+            messages.success(request, 'Product was created successfully.')
+            return redirect('owner-home')
         else:
-            print("Form is not valid")  
-            print(form.errors)  
+            messages.error(request, 'There was an error creating the product.')
             return render(request, 'add-product.html', {"form": form})
 
-class ProductView(View):
+
+class DetailProductView(View):
     def get(self,request,*args, **kwargs):
         id=kwargs.get('pk')
         product_obj=Product.objects.get(id=id)
         return render (request,'view-product.html',{"data":product_obj})
+    
+class DeleteProductView(View):
+    def post(self, request, *args, **kwargs):
+        product_id = kwargs.get('pk')
+        product = get_object_or_404(Product, id=product_id)
+        product.delete()
+        messages.success(request, 'Product was deleted successfully.')
+        return redirect('owner-home')
