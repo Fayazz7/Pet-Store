@@ -13,6 +13,32 @@
 
 <body>
     <div class="container">
+        <div id="messages">
+            {%if messages%}
+                {%for m in messages%}
+                {%if m.level == DEFAULT_MESSAGE_LEVELS.ERROR%}
+                <div class="alert alert-danger align-items-center" role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="10" role="img" aria-label="Success:">
+                        <use xlink:href="#check-circle-fill" />
+                    </svg>
+                    <div>
+                        {{m}}
+                    </div>
+                </div>
+                {%endif%}
+                {%if m.level == DEFAULT_MESSAGE_LEVELS.SUCCESS%}
+                <div class="alert alert-success  align-items-end " role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="10" role="img" aria-label="Success:">
+                        <use xlink:href="#check-circle-fill" />
+                    </svg>
+                    <div>
+                        {{m}}
+                    </div>
+                </div>
+                {%endif%}
+                {%endfor%}
+                {%endif%}
+        </div>
         <section class=" bg-image">
             <div class="mask d-flex align-items-center h-100 gradient-custom-3 mt-5 ">
                 <div class="container">

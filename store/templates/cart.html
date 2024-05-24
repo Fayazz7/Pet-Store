@@ -13,8 +13,8 @@
     {% include "nav-bar.html" %}
 
     <div class="container mt-5">
-    <div id="messages">
-        {%if messages%}
+        <div id="messages">
+            {%if messages%}
             {%for m in messages%}
             {%if m.level == DEFAULT_MESSAGE_LEVELS.ERROR%}
             <div class="alert alert-danger align-items-center" role="alert">
@@ -38,34 +38,55 @@
             {%endif%}
             {%endfor%}
             {%endif%}
-    </div>
-        <h2 class="text-center mb-4 fw-bolder ">All Products</h2>
+        </div>
+        <div class="row">
+            <div class="col-4">
+
+            </div>
+            <div class="col-4">
+                <h2 class="text-center mb-4 fw-bolder ">Cart</h2>
+            </div>
+            <div class="col-4">
+                <h5 class="text-end mt-2">Total Items:{{cart.cart_item_quantity}} </h5>
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table  table-bordered">
                 <thead class="bg-black">
                     <tr class="table-dark">
                         <th class="align-middle">Title</th>
                         <th class="align-middle">price</th>
-                        <th class="align-middle">stock</th>
-                        <th class="align-middle">category</th>
-                        <th class="align-middle">Action</th>
+                        <th class="align-middle">quantity</th>
+                        <th class="align-middle">Total</th>
+                        <th class="align-middle">Remove</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for d in data %}
                     <tr>
-                        <td class="align-middle"> {{d.title}} </td>
-                        <td class="align-middle"> {{d.price}} </td>
-                        <td class="align-middle  "> {{d.stock}} </td>
-                        <td class="align-middle  "> {{d.category}} </td>
+                        <td class="align-middle"> {{d.product.title}} </td>
+                        <td class="align-middle"> {{d.product.price}} </td>
+                        <td class="align-middle  "> {{d.quantity}} </td>
+                        <td class="align-middle  "> {{d.total}} </td>
                         <td class="align-middle d-flex justify-content-center "><a href="{% url 'view-product' d.id %}"
-                                class="btn btn-info ">View</a></td>
+                                class="btn btn-info "><i class="fa-solid fa-trash"></i></a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-
+            
         </div>
+        <div class="row">
+            <div class="col-4">
+
+            </div>
+            <div class="col-4">
+
+            </div>
+            <div class="col-4">
+                <h5 class="text-end mt-2">Sub total:{{cart.sub_totel}} </h5>
+            </div>
+            </div>
     </div>
 
 </body>

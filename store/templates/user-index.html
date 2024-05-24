@@ -3,11 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Home!</title>
+    <title>Document</title>
     {% include "header.html" %}
+    
+    
 </head>
 <body>
-    {% include "nav-bar.html" %}
-    {{request.username}}
+    {%include 'nav-bar.html'%}
+    <div id="messages">
+        {%if messages%}
+            {%for m in messages%}
+            {%if m.level == DEFAULT_MESSAGE_LEVELS.ERROR%}
+            <div class="alert alert-danger align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="10" role="img" aria-label="Success:">
+                    <use xlink:href="#check-circle-fill" />
+                </svg>
+                <div>
+                    {{m}}
+                </div>
+            </div>
+            {%endif%}
+            {%if m.level == DEFAULT_MESSAGE_LEVELS.SUCCESS%}
+            <div class="alert alert-success  align-items-end " role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="10" role="img" aria-label="Success:">
+                    <use xlink:href="#check-circle-fill" />
+                </svg>
+                <div>
+                    {{m}}
+                </div>
+            </div>
+            {%endif%}
+            {%endfor%}
+            {%endif%}
+    </div>
+                <div class="row mt-lg-5 mt-md-3 mt-sm-2">
+                    <div class="col-lg-3 col-4">
+                    </div>
+                    <div class="col-lg-6 col-4">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="d-flex">
+                                <input type="text" class="form-control me-2" placeholder="Search" name="product">
+                                <button type="submit" class="d-flex btn btn-success">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-4 col-4">
+                    </div>
+                </div>
+            
+
+    <div class="row ms-lg-5 ms-md-3 ms-sm-2 me-2 mt-3 ">
+        {% for p in data %}
+        <div class="card m-2 " style="max-width: 450px;">
+            <div class="row no-gutters">
+                <div class="col-md-4 justify-content-center p-0 ">
+                    <img src="{{p.picture.url}}" class="card-img" alt="Book Cover" height="222px">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"> {{p.title}} </h5>
+                        <p><h6>Rate: {{p.price}} </h6></p>
+                        <p>Category: {{p.category}} </p>
+                        <div class=" d-flex justify-content-evenly mt-5 ">
+                            <a href="{% url 'view-product' p.id %}" class="btn btn-outline-primary ">Detail View</a>
+                            <a href=" {%url 'add-to-cart'  p.id %} " class="btn btn-primary" >Add to Cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
