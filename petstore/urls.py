@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from store.views import *
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',IndexView.as_view(),name='index'),
@@ -25,5 +27,8 @@ urlpatterns = [
     path('owner/', AdminIndexView.as_view(), name='owner-home'),
     path('user/',UserIndexView.as_view(), name='user-home'),
     path('logout',SignOutView.as_view(), name='sign-out'),
-    path('users/list/',UsersListView.as_view(),name='users-list')
-]
+    path('users/list/',ProductListView.as_view(),name='users-list'),
+    path('product/add/',CreateProductView.as_view(),name='add-product'),
+    path('category/',CategoryListCreateView.as_view(),name='category'),
+    path('product/view/<int:pk>/',ProductView.as_view(),name='view-product')
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -5,34 +5,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin</title>
+    <title>Admin-Home</title>
     {% include "header.html" %}
 </head>
 
 <body>
     {% include "nav-bar.html" %}
     <div class="container mt-5">
-        <h2 class="text-center mb-4 fw-bolder ">All Users</h2>
+        <h2 class="text-center mb-4 fw-bolder ">All Products</h2>
         <div class="table-responsive">
             <table class="table  table-bordered">
                 <thead class="bg-black">
                     <tr class="table-dark">
-                        <th class="align-middle">User</th>
-                        <th class="align-middle">Email</th>
-                        <th class="align-middle">Phone Number</th>
-                        <th class="align-middle">View</th>
+                        <th class="align-middle">Title</th>
+                        <th class="align-middle">price</th>
+                        <th class="align-middle">stock</th>
+                        <th class="align-middle">category</th>
+                        <th class="align-middle">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for d in data %}
                     <tr>
-                        {% if d.is_superuser == False %}
-                        <td class="align-middle"> {{d.username}} </td>
-                        <td class="align-middle"> {{d.email}} </td>
-                        <td class="align-middle  "> {{d.profile.phone}} </td>
+                        <td class="align-middle"> {{d.title}} </td>
+                        <td class="align-middle"> {{d.price}} </td>
+                        <td class="align-middle  "> {{d.stock}} </td>
+                        <td class="align-middle  "> {{d.category}} </td>
                         <td class="align-middle d-flex justify-content-center "><a
-                                href="" class="btn btn-info ">View</a></td>
-                        {%endif%}
+                                href="{% url 'view-product' d.id %}" class="btn btn-info ">View</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

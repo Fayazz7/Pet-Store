@@ -63,7 +63,7 @@ class SignOutView(View):
     
 class AdminIndexView(View):
     def get(self,request,*args, **kwargs):
-        users=User.objects.all()
+        users=Product.objects.all()
         return render (request,'admin-index.html',{"data":users})
     
 class UserIndexView(View):
@@ -77,7 +77,29 @@ class CategoryListCreateView(CreateView,ListView):
     context_object_name="data"
     model=Category
     
-class UsersListView(View):
+class ProductListView(View):
     def get(self,request,*args, **kwargs):
-        users=User.objects.all()
+        users=Product.objects.all()
         return render (request,'admin-index.html',{"data":users})
+    
+class CreateProductView(View):
+    def get(self, request, *args, **kwargs):
+        form = ProductForm()
+        return render(request, 'add-product.html', {"form": form})
+    
+    def post(self, request, *args, **kwargs):
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            print("Form is valid")  
+            form.save()
+            return render(request, 'add-product.html', {"form": form})
+        else:
+            print("Form is not valid")  
+            print(form.errors)  
+            return render(request, 'add-product.html', {"form": form})
+
+class ProductView(View):
+    def get(self,request,*args, **kwargs):
+        id=kwargs.get('pk')
+        product_obj=Product.objects.get(id=id)
+        return render (request,'view-product.html',{"data":product_obj})

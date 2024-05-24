@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% include "header.html" %}
+
+</head>
+<body>
+    {% include "nav-bar.html" %}
+    <h1 class="d-flex justify-content-center mt-3 fw-bolder " >Product View</h1>
+    <div class="container">
+      <div class="card mb-3 mt-5" style="width: 90vw; height: 70vh">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img src="{{data.picture.url}}" class="img-thumbnail rounded-start" alt="...">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h4 class="card-title">Name : {{data.title}} </h4>
+                <h5 class="mt-3">Price : {{data.price}} </h5>
+                <h6 class="mt-3">Stock : {{data.stock}} </h6>
+                <h6 class="mt-3">Category : {{data.category}} </h6>
+
+                <p class="card-text">Description : {{data.description}}</p>
+
+                <a href=" " class="btn btn-primary mt-3">Edit</a>
+                <a href=" " class="btn btn-danger mt-3 ml-2">Delete</a>
+                <a href="" class="btn btn-primary mt-3 ml-2">Go Back</a>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+</body>
+</html>

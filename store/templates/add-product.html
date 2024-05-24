@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    {% include "header.html" %}
+</head>
+<body>
+    {% include "nav-bar.html" %}
+    <div class="container mt-3">
+        <div class="container w-100 ">
+            <h1 class="text-center fw-bolder ">Add Products</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row w-100 m-auto  border p-4 shadow">
+                    <div class="form-group col-6 mt-3">
+                        <label for="img">Title</label>
+                        <input type="text" class="form-control mt-3" id="img" name="title" placeholder="Enter your title here">
+                    </div>
+                    <div class="form-group col-6 mt-3">
+                        <label for="img">Image</label>
+                        <input type="file" class="form-control mt-3" id="img" name="picture">
+                    </div>
+                    <div class="col-6 mt-3 w-50">
+                        <div class="row w-100">
+                            <div class="form-group col-3 w-50">
+                                <label for="img">Price</label>
+                                <input type="number" class="form-control mt-3 w-100" id="img" name="price" placeholder="Enter your price here">
+                            </div>
+                            <div class="form-group col-3 w-50">
+                                <label for="img">Stock</label>
+                                <input type="number" class="form-control mt-3" id="img" name="stock" placeholder="Enter your stock here">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-6 mt-3">
+                        <label for="category" class="mt-3">Category:</label>
+                        <select id="category" class="form-control" name="category">
+                            {% for value, label in form.category.field.choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group col-12 mt-3">
+                        <label for="about" class="mt-3">About:</label>
+                        <textarea name="description" id="about" cols="20" rows="5" class="form-control mt-3">  </textarea>
+                    </div>
+                    <div class="d-flex justify-content-center mt-5"><button type="submit"
+                            class="btn btn-primary">Submit</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
