@@ -66,6 +66,32 @@ class BasketItem(models.Model):
     def total(self):
         return self.quantity*self.product.price 
 
+
+class Complaints(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='complaint',blank=True)
+    text=models.CharField(max_length=200,blank=True,null=True)
+    description=models.CharField(max_length=200,blank=True,null=True)
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+    is_active=models.BooleanField(default=True)
+    
+class Order(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='order')
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    quantity=models.PositiveIntegerField(default=1)
+    status_choice=[
+        ('inprogress','Inprogress'),
+        ('rejected','Rejected'),
+        ('accepted','Accepted'),
+        ('delivery','Delivery')
+    ]
+    order_status=models.CharField(max_length=200,choices=status_choice,default='inprogress')
+    total=models.CharField(max_length=1000)
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+    is_active=models.BooleanField(default=True)
+    
+
 def create_basket(sender,instance,created,**kwargs):
     if created:
         Basket.objects.create(owner=instance)

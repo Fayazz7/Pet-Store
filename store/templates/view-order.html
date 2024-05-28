@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    {% include "header.html" %}
+</head>
+
+<body>
+    {% include "nav-bar.html" %}
+
+    <div class="container mt-5">
+        <div id="messages">
+            {%if messages%}
+            {%for m in messages%}
+            {%if m.level == DEFAULT_MESSAGE_LEVELS.ERROR%}
+            <div class="alert alert-danger align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="10" role="img" aria-label="Success:">
+                    <use xlink:href="#check-circle-fill" />
+                </svg>
+                <div>
+                    {{m}}
+                </div>
+            </div>
+            {%endif%}
+            {%if m.level == DEFAULT_MESSAGE_LEVELS.SUCCESS%}
+            <div class="alert alert-success  align-items-end " role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="10" role="img" aria-label="Success:">
+                    <use xlink:href="#check-circle-fill" />
+                </svg>
+                <div>
+                    {{m}}
+                </div>
+            </div>
+            {%endif%}
+            {%endfor%}
+            {%endif%}
+        </div>
+        <div class="row">
+            <div class="col-4">
+
+            </div>
+            <div class="col-4">
+                {% if request.user.is_superuser %}
+                <h2 class="text-center mb-4 fw-bolder ">All Orders</h2>
+                {% else %}
+                <h2 class="text-center mb-4 fw-bolder ">My Orders</h2>
+                {% endif %}
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table  table-bordered">
+                <thead class="bg-black">
+                    <tr class="table-dark">
+                        <th class="align-middle">Product</th>
+                        <th class="align-middle">Quantity</th>
+                        <th class="align-middle">Price</th>
+                        {% if request.user.is_superuser %}
+                        <th class="align-middle">Status</th>
+                        <th class="align-middle">User</th>
+                        <th class="align-middle">Action</th>
+                        {% else %}
+                        <th class="align-middle">Status</th>
+                        <th class="align-middle">Action</th>
+                        {%endif%}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in data %}
+                    <tr>
+                        <td class="align-middle"> {{d.product.title}} </td>
+                        <td class="align-middle"> {{d.quantity}} </td>
+                        <td class="align-middle"> {{d.total}} </td>
+                        {% if request.user.is_superuser %}
+                        <form method="post" action="{% url 'update-status'  d.id %}">
+                            {% csrf_token %}
+                            <td class="align-middle">
+                                <select id="category" class="form-control" name="order_status">
+                                    {% for key, value in d.status_choice %}
+                                        <option value="{{ key }}" {% if d.order_status == key %}selected{% endif %}>{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td class="align-middle"> {{d.user.username}} </td>
+    
+                            <td class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-success">Update Status</button>
+                            </td>
+                        </form>
+                        {% else %}
+                        <td class="align-middle"> {{d.order_status}} </td>
+                        <td class="d-flex justify-content-center">
+                            <a href="{% url 'cancel-order' d.id %}" class="btn btn-danger">Cancel Order</a>
+                        </td>
+                        {%endif%}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -21,8 +21,8 @@
                     More
                     </button>
                     <ul class="dropdown-menu">
-                    <li><a class="nav-link text-dark  me-3 fw-bold" aria-current="page" href="">Orders</a></li>
-                    <li><a class="nav-link text-dark  me-3 fw-bold" aria-current="page" href="">Complaints</a></li>
+                    <li><a class="nav-link text-dark  me-3 fw-bold" aria-current="page" href="{%url 'order-view'%}">Orders</a></li>
+                    <li><a class="nav-link text-dark  me-3 fw-bold" aria-current="page" href="{%url 'view-complaints'%}">Complaints</a></li>
                     <li><a class="nav-link text-dark  me-3 fw-bold" aria-current="page" href="{%url 'add-product' %}">Add Products</a></li>
                     <li><a class="nav-link text-dark  me-3 fw-bold" aria-current="page" href="{%url 'category' %}">Category</a></li>
                     
@@ -40,9 +40,13 @@
                         <Button class="btn btn-primary " >More</Button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item"
-                                    href="">Complaints</a>
+                                    href="{%url 'view-complaints'%}">Complaints</a>
 
                             </li>
+                            <li><a class="dropdown-item"
+                                href="{%url 'order-view'%}">My Orders</a>
+
+                        </li>
                             <li>
                                 <hr class="dropdown-divider text-light" style="color:white;">
                             </li>

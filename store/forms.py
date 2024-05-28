@@ -30,3 +30,13 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['title', 'picture', 'price', 'description', 'stock', 'category']
+        
+class ComplaintForm(forms.ModelForm):
+    class Meta:
+        model=Complaints
+        fields="__all__"
+        
+class OrderForm(forms.Form):
+    class Meta:
+        model=Order
+        fields=['user','product','quantity','order_status','total']

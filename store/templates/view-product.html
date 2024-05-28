@@ -57,7 +57,7 @@
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger mt-3 ml-2">Delete</button>
                 </form>
-                <a href="" class="btn btn-primary mt-3 ml-2">Go Back</a>
+                <a href="{% url 'owner-home' %}" class="btn btn-primary mt-3 ml-2">Go Back</a>
                 {% else %}
                 <a href="{%url 'add-to-cart'  data.id %}" class="btn btn-primary mt-3">Add to Cart</a>
                 <a href="{% url 'user-home' %}" class="btn btn-primary mt-3 ml-2">Go Back</a>

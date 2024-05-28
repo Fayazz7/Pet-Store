@@ -7,6 +7,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -184,4 +187,121 @@ class ViewCart(View):
         cart_item_obj=request.user.cart.cartitem.all()
         cart=Basket.objects.get(owner=request.user)
         return render (request,'cart.html',{"data":cart_item_obj,'cart':cart})
+    def post(self,request,*args, **kwargs):
+        if  'plus' in request.POST:
+            data=request.POST.get('plus')
+            item_obj=get_object_or_404(BasketItem,id=data)
+            product_obj=get_object_or_404(Product,id=item_obj.product.id)
+            item_obj.quantity+=1
+            product_obj.stock-=1
+            messages.success(request, 'Item Added Successfully.')
+            item_obj.save()
+            product_obj.save()
+            return redirect('view-cart')
+        elif 'mines' in request.POST:
+            data=request.POST.get('mines')
+            item_obj=get_object_or_404(BasketItem,id=data)
+            product_obj=get_object_or_404(Product,id=item_obj.product.id)
+            item_obj.quantity-=1
+            product_obj.stock+=1
+            messages.error(request, 'One Item Removed successfully')
+            item_obj.save()
+            product_obj.save()
+            return redirect('view-cart')
+        
+    
+class RemoveFromCart(View):
+    def get(self, request, *args, **kwargs):
+        id = kwargs.get("pk")
+        cart_item_obj = get_object_or_404(BasketItem, id=id)
+        product_obj = cart_item_obj.product
+        product_obj.stock += cart_item_obj.quantity
+        messages.success(request, 'Item Removed Successfully.')
+        product_obj.save()
+        cart_item_obj.delete()
+        return redirect('user-home')
+    
+class CreateComplaint(View):
+    def get(self,request,*args, **kwargs):
+        form=ComplaintForm()
+        return render (request,'create-complaint.html',{"form":form})
+    def post(self,request,*args, **kwargs):
+        text_data=request.POST.get('text')
+        des_data=request.POST.get('description')
+        user_data=request.user
+        data={
+            'text':text_data,
+            'description':des_data,
+            'user':user_data
+        }
+        form=ComplaintForm(data=data)
+        if form.is_valid():
+            messages.success(request, 'Complaint created.')
+            form.save()
+            return redirect ('view-complaints')
+        else:
+            messages.error(request, 'There was an error check your data.')
+            return render (request,'create-complaint.html',{"form":form})
+        
+class ViewComplaints(View):
+    def get(self,request,*args, **kwargs):
+        if request.user.is_superuser:
+            data=Complaints.objects.all()
+        else:
+            data=Complaints.objects.filter(user=request.user)
+        return render (request,'view-complaints.html',{"data":data})
+
+class DeleteComplaint(View):
+    def get(self,request,*args, **kwargs):
+        id=kwargs.get('pk')
+        Complaints.objects.get(id=id).delete()
+        messages.success(request, 'Complaint Deleted Successfully.')
+        return redirect ('view-complaints')
+    
+class OrderView(View):
+    def get(self,request,*args, **kwargs):
+        if request.user.is_superuser:
+            data=Order.objects.all()
+        else:
+            data=Order.objects.filter(user=request.user)
+        return render (request,'view-order.html',{"data":data})
+    
+    
+class CreateOrder(View):
+    def post(self,request,*args, **kwargs):
+        user=request.user
+        basket_obj=Basket.objects.get(owner=user)
+        basket_item_obj=BasketItem.objects.filter(basket=basket_obj)
+        for item in basket_item_obj:
+            Order.objects.create(user=user,product=item.product,quantity=item.quantity,total=item.total)
+            BasketItem.objects.get(id=item.id).delete()
+            messages.success(request, 'Order Placed')
+        return redirect ('order-view')
+    
+class CancelOrder(View):
+    def get(self,request,*args, **kwargs):
+        id=kwargs.get('pk')
+        Order.objects.get(id=id).delete()
+        messages.success(request, 'Order Canceled.')
+        return redirect ('order-view')
+
+class UpdateOrderStatus(View):
+    def post(self,request,*args, **kwargs):
+        id=kwargs.get('pk')
+        data=request.POST
+        print(data['order_status'])
+        order_obj=get_object_or_404(Order,id=id)
+        order_obj.order_status=data['order_status']
+        order_obj.save()
+        messages.success(request, 'Order Status Updated Successfully.')
+        return redirect ('order-view')
+        
+    
+    
+        
+            
+            
+            
+        
+        
     
