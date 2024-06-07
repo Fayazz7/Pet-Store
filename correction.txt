@@ -1,0 +1,11 @@
+Rate - Rs symbol
+Forgot password
+Add Wishlist icon
+At a time add to cart - already existing
+Cancel order - fund return
+Profile update ,pass change 
+Admin - user delete option Venda
+Display Products images
+Update stock
+Delivery status- estimated delivery
+Add payment

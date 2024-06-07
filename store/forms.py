@@ -40,3 +40,26 @@ class OrderForm(forms.Form):
     class Meta:
         model=Order
         fields=['user','product','quantity','order_status','total']
+        
+class UpdateProfileForm(forms.ModelForm):
+    phone = forms.CharField(max_length=20, required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(UpdateProfileForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['username'].initial = user.username
+            self.fields['email'].initial = user.email
+            self.fields['phone'].initial = user.profile.phone
+
+    def save(self, commit=True):
+        user = super(UpdateProfileForm, self).save(commit=False)
+        user.profile.phone = self.cleaned_data['phone']
+        if commit:
+            user.save()
+            user.profile.save()
+        return user

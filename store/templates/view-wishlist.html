@@ -56,19 +56,18 @@
     <div class="row ms-lg-5 ms-md-3 ms-sm-2 me-2 mt-3 ">
         {% for p in data %}
         <div class="card m-2 " style="max-width: 450px;">
-            
             <div class="row no-gutters">
                 <div class="col-md-4 justify-content-center p-0 ">
-                    <img src="{{p.picture.url}}" class="card-img" alt="Book Cover" height="222px">
+                    <img src="{{p.product.picture.url}}" class="card-img" alt="Book Cover" height="222px">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
-                        <h5 class="card-title"> {{p.title}} </h5>
-                        <p><h6>Rs: {{p.price}} </h6></p>
-                        <p>Category: {{p.category}} </p>
-                        <div class=" d-flex justify-content-around mt-5 ">
+                        <h5 class="card-title"> {{p.product.title}} </h5>
+                        <p><h6>Rs: {{p.product.price}} </h6></p>
+                        <p>Category: {{p.product.category}} </p>
+                        <div class=" d-flex justify-content-evenly mt-5 ">
                             <a href="{% url 'view-product' p.id %}" class="btn btn-outline-primary ">Detail View</a>
-                            <a href=" {%url 'add-wishlist'  p.id %} " class="btn btn-outline-primary " >Add to WishList</a>
+                            <a href=" {%url 'remove-wishlist'  p.product.id %} " class="btn btn-outline-danger" >Remove</a>
                         </div>
                     </div>
                 </div>

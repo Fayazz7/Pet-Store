@@ -10,6 +10,9 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
+import razorpay
+from django.conf import settings
+# client = razorpay.Client(auth=("rzp_test_SROSnyInFv81S4", "WIWYANkTTLg7iGbFgEbwj4BM"))
 
 # Create your views here.
 
@@ -94,6 +97,12 @@ class CategoryListCreateView(CreateView,ListView):
     context_object_name="data"
     model=Category
     
+class CategoryDeleteView(View):
+    def get(self,request,*args, **kwargs):
+        id=kwargs.get("pk")
+        Category.objects.get(id=id).delete()
+        return redirect ('category')
+    
 class UserListView(View):
     def get(self,request,*args, **kwargs):
         users=User.objects.all()
@@ -167,13 +176,15 @@ class AddToCart(View):
         product_obj=get_object_or_404(Product,id=id)
         cart_obj=request.user.cart
         if BasketItem.objects.filter(basket=cart_obj,product=product_obj).exists():
-                    cart_item_obj=BasketItem.objects.get(basket=cart_obj,product=product_obj)
-                    cart_item_obj.quantity+=1
-                    product_obj.stock-=1
-                    cart_item_obj.save()
-                    product_obj.save()
-                    messages.success(request, 'Added to Cart.')
-                    return redirect('user-home')
+            messages.success(request,'Item Already Exist your Cart')
+            return redirect('user-home')
+                    # cart_item_obj=BasketItem.objects.get(basket=cart_obj,product=product_obj)
+                    # cart_item_obj.quantity+=1
+                    # product_obj.stock-=1
+                    # cart_item_obj.save()
+                    # product_obj.save()
+                    # messages.success(request, 'Added to Cart.')
+                    # return redirect('user-home')
         else:
             cart_item_obj=BasketItem.objects.create(basket=cart_obj,product=product_obj)
             product_obj.stock-=1
@@ -184,8 +195,12 @@ class AddToCart(View):
         
 class ViewCart(View):
     def get(self,request,*args, **kwargs):
-        cart_item_obj=request.user.cart.cartitem.all()
+        
         cart=Basket.objects.get(owner=request.user)
+        cart_item_obj=BasketItem.objects.filter(basket=cart.pk)
+        if not cart_item_obj.exists():
+            messages.error(request, 'Add atleast one Product to View Cart')
+            return redirect('user-home')
         return render (request,'cart.html',{"data":cart_item_obj,'cart':cart})
     def post(self,request,*args, **kwargs):
         if  'plus' in request.POST:
@@ -216,10 +231,13 @@ class RemoveFromCart(View):
         cart_item_obj = get_object_or_404(BasketItem, id=id)
         product_obj = cart_item_obj.product
         product_obj.stock += cart_item_obj.quantity
-        messages.success(request, 'Item Removed Successfully.')
         product_obj.save()
         cart_item_obj.delete()
-        return redirect('user-home')
+        if not BasketItem.objects.filter(basket=cart_item_obj.basket).exists():
+            messages.success(request, 'Item Removed Successfully.')
+            return redirect('user-home')
+        messages.success(request, 'Item Removed Successfully.')
+        return redirect('view-cart')
     
 class CreateComplaint(View):
     def get(self,request,*args, **kwargs):
@@ -268,21 +286,44 @@ class OrderView(View):
     
     
 class CreateOrder(View):
-    def post(self,request,*args, **kwargs):
-        user=request.user
-        basket_obj=Basket.objects.get(owner=user)
-        basket_item_obj=BasketItem.objects.filter(basket=basket_obj)
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        basket_obj = Basket.objects.get(owner=user)
+        if not basket_obj.DoesNotExist:
+            messages.success(request, 'Add Atleast One item to place an Order')
+            return redirect ('user-home')
+        basket_item_obj = BasketItem.objects.filter(basket=basket_obj)
+        total_amount = sum(item.total for item in basket_item_obj) * 100
+        client = razorpay.Client(auth=("rzp_test_SROSnyInFv81S4", "WIWYANkTTLg7iGbFgEbwj4BM"))
+        razorpay_order = client.order.create({
+            'amount': total_amount,
+            'currency': 'INR',
+            'payment_capture': '1'
+        })
+
         for item in basket_item_obj:
-            Order.objects.create(user=user,product=item.product,quantity=item.quantity,total=item.total)
+            Order.objects.create(user=user, product=item.product, quantity=item.quantity, total=item.total)
             BasketItem.objects.get(id=item.id).delete()
-            messages.success(request, 'Order Placed')
-        return redirect ('order-view')
+
+        messages.success(request, 'Order Placed')
+        
+        context = {
+            'razorpay_order_id': razorpay_order['id'],
+            'razorpay_key': settings.RAZORPAY_KEY_ID,
+            'amount': total_amount,
+            'currency': 'INR'
+        }
+
+        return render(request, 'payment.html', context)
     
 class CancelOrder(View):
     def get(self,request,*args, **kwargs):
         id=kwargs.get('pk')
         Order.objects.get(id=id).delete()
-        messages.success(request, 'Order Canceled.')
+        if not Order.objects.filter(user=request.user).exists():
+            messages.success(request, 'Your order has been cancelled. Refund will be processed shortly')
+            return redirect ('user-home')
+        messages.success(request, 'Your order has been cancelled. Refund will be processed shortly')
         return redirect ('order-view')
 
 class UpdateOrderStatus(View):
@@ -295,6 +336,82 @@ class UpdateOrderStatus(View):
         order_obj.save()
         messages.success(request, 'Order Status Updated Successfully.')
         return redirect ('order-view')
+        
+class PaymentSuccess(View):
+    def post(self, request, *args, **kwargs):
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        params_dict = {
+            'razorpay_order_id': request.POST.get('razorpay_order_id'),
+            'razorpay_payment_id': request.POST.get('razorpay_payment_id'),
+            'razorpay_signature': request.POST.get('razorpay_signature')
+        }
+        try:
+            client.utility.verify_payment_signature(params_dict)
+            # Payment is successful, handle the business logic here
+            messages.success(request, 'Payment successful')
+            return redirect('success')
+        except:
+            messages.error(request, 'Payment failed')
+            return redirect('order-view')
+        
+class AddProductToWishList(View):
+    def get(self,request,*args, **kwargs):
+        id=kwargs.get('pk')
+        product_obj=get_object_or_404(Product,id=id)
+        if not product_obj.DoesNotExist:
+            messages.error(request, 'Product Does Not Exist')
+            return redirect('user-home')
+        user_obj=get_object_or_404(User,id=request.user.pk)
+        if not user_obj.DoesNotExist:
+            messages.error(request, 'LogIn Required')
+            return redirect('sign-in')
+        if WishList.objects.filter(product=product_obj).exists():
+            messages.error(request, 'Product Already in WishList')
+            return redirect('user-home')
+        WishList.objects.create(user=user_obj,product=product_obj).save()
+        messages.success(request, 'Product Added to WishList')
+        return redirect('user-home')
+    
+class WishListView(View):
+    def get(self,request,*args, **kwargs):
+        wishlist=WishList.objects.filter(user=request.user)
+        if not wishlist.exists():
+            messages.success(request, 'Add Atleast One item to View WishList')
+        return render (request,'view-wishlist.html',{"data":wishlist})
+    
+class RemoveFromWishLIst(View):
+    def get(self,request,*args, **kwargs):
+        id=kwargs.get('pk')
+        product_obj=get_object_or_404(Product,id=id)
+        WishList.objects.get(product=product_obj.pk).delete()
+        if not WishList.objects.filter(user=request.user).exists():
+            messages.success(request, 'Product removed Successfully')
+            return redirect('user-home')
+        else:
+            return redirect('view-wishlist')
+        
+class SuccessView(View):
+    def get(self,request,*args, **kwargs):
+        return render (request,'success.html')
+    
+class UpdateProfileView(View):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        form = UpdateProfileForm(user=user)
+        return render(request, 'user-profile.html', {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        form = UpdateProfileForm(request.POST, user=user, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile Updated Successfully')
+            return redirect('update-profile')
+        else:
+            print(form.errors)
+            messages.error(request, 'Profile Updation Failed')
+            return render(request, 'user-profile.html', {"form": form})
+            
         
     
     
