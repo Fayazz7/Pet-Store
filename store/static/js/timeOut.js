@@ -4,5 +4,5 @@ document.addEventListener('DOMContentLoaded', function() {
         if (messages) {
             messages.style.display = 'none';
         }
-    }, 3000); // 3000 milliseconds = 3 seconds
+    }, 7000); // 3000 milliseconds = 3 seconds
 });

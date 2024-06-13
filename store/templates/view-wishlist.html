@@ -66,7 +66,7 @@
                         <p><h6>Rs: {{p.product.price}} </h6></p>
                         <p>Category: {{p.product.category}} </p>
                         <div class=" d-flex justify-content-evenly mt-5 ">
-                            <a href="{% url 'view-product' p.id %}" class="btn btn-outline-primary ">Detail View</a>
+                            <a href="{% url 'view-product' p.product.id %}" class="btn btn-outline-primary ">Detail View</a>
                             <a href=" {%url 'remove-wishlist'  p.product.id %} " class="btn btn-outline-danger" >Remove</a>
                         </div>
                     </div>

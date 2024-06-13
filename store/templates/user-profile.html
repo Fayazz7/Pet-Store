@@ -7,7 +7,7 @@
     <title>Update User Profile</title>
     {% include "header.html" %}
 </head>
-<body>
+<body style="background-image: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);">
     {% include "nav-bar.html" %}
     <div class="container mt-3">
         <div id="messages">
@@ -37,7 +37,7 @@
         </div>
         <div class="container w-100">
             <h1 class="text-center fw-bolder">Update User Profile</h1>
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" class="override-background">
                 {% csrf_token %}
                 <div class="row w-100 m-auto border p-4 shadow">
                     <div class="form-group col-6 mt-3">

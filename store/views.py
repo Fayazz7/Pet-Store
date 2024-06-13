@@ -219,9 +219,19 @@ class ViewCart(View):
             product_obj=get_object_or_404(Product,id=item_obj.product.id)
             item_obj.quantity-=1
             product_obj.stock+=1
-            messages.error(request, 'One Item Removed successfully')
             item_obj.save()
             product_obj.save()
+            if item_obj.quantity == 0:
+                cart_item_obj = get_object_or_404(BasketItem, id=data)
+                product_obj = cart_item_obj.product
+                product_obj.stock += cart_item_obj.quantity
+                product_obj.save()
+                cart_item_obj.delete()
+                if not BasketItem.objects.filter(basket=cart_item_obj.basket).exists():
+                    messages.success(request, 'Item Removed Successfully.')
+                    return redirect('user-home')
+                messages.error(request, 'One Item Removed successfully')
+                return redirect('view-cart')
             return redirect('view-cart')
         
     
@@ -280,8 +290,14 @@ class OrderView(View):
     def get(self,request,*args, **kwargs):
         if request.user.is_superuser:
             data=Order.objects.all()
+            if not data.exists():
+                messages.success(request,"No Order exists")
+                return redirect ('owner-home')
         else:
             data=Order.objects.filter(user=request.user)
+            if not data.exists():
+                messages.success(request,"You don't have any orders")
+                return redirect ('user-home')
         return render (request,'view-order.html',{"data":data})
     
     
@@ -377,6 +393,7 @@ class WishListView(View):
         wishlist=WishList.objects.filter(user=request.user)
         if not wishlist.exists():
             messages.success(request, 'Add Atleast One item to View WishList')
+            return redirect('user-home')
         return render (request,'view-wishlist.html',{"data":wishlist})
     
 class RemoveFromWishLIst(View):

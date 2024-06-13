@@ -3,8 +3,8 @@ from django.urls import path
 from store.views import *
 from django.conf import settings
 from django.conf.urls.static import static
-from store.password_reset import PasswordResetRequestView, PasswordResetConfirmView
-
+from django.contrib.auth import views as auth_views
+from store.password_reset import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),

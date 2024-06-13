@@ -121,6 +121,18 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+import os
+import environ
+env = environ.Env()
+environ.Env.read_env()
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 RAZORPAY_KEY_ID='rzp_test_SROSnyInFv81S4'
 RAZORPAY_KEY_SECRET='WIWYANkTTLg7iGbFgEbwj4BM'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'annm17106@gmail.com'
+EMAIL_HOST_PASSWORD = 'maria@007'
+DEFAULT_FROM_EMAIL = 'annm17106@gmail.com'
